@@ -31,13 +31,13 @@ def get_coords(location_name: str) -> Dict[str, float]:
 def find_mates(
     my_name: str,
     coords: Dict[str, float],
-    min_mates=5,
+    min_mates=6,
 ) -> pd.DataFrame:
     """Find mates that indicated a location near coords."""
     coords_vec = np.array([coords["lat"], coords["lon"]])
-    all_mates = db.fetch({"mates.name?ne": my_name}).items
+    all_mates = db.fetch().items
     all_mates_df = pd.DataFrame(all_mates)
-    all_mates_df = all_mates_df[all_mates_df["name"] != my_name]
+    # all_mates_df = all_mates_df[all_mates_df["name"] != my_name]
     mates_position = np.array(all_mates_df[["lat", "lon"]])
     # Compute L1 distance to every other mate
     # We can do that because every point is very close (approximately a plane)
@@ -55,7 +55,7 @@ def find_mates(
         ).km,
         axis=1,
     )
-    return all_mates_df[["name", "location_name", "distance (km)"]]
+    return all_mates_df
 
 
 # Page
@@ -101,7 +101,8 @@ if submitted and name.strip() != "":
     )
     mates = find_mates(name, coords)
     st.markdown("## These mates live near you:")
-    st.table(mates)
+    st.table(mates[mates["name"] != mates][["name", "location_name", "distance (km)"]])
+    st.map(mates)
 
 st.markdown(
     """---
