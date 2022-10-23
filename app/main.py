@@ -36,7 +36,7 @@ def find_mates(coords: Dict[str, float], min_mates=5) -> pd.DataFrame:
     # Compute a proper geodesic otherwise.
     mates_distances = np.linalg.norm((mates_position - coords_vec), ord=1, axis=1)
     # Select all top 5 closest mates
-    n = min(min_mates, all_mates.shape[0])
+    n = min(min_mates, all_mates_df.shape[0])
     min_indices = np.argpartition(mates_distances, n - 1)[:n]
     all_mates_df = all_mates_df.iloc[min_indices]
     # Compute proper meter distance for them
