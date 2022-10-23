@@ -36,7 +36,6 @@ with st.form("form"):
     name = st.text_input("Your full name", placeholder="Lowis Douglas")
     location_name = st.selectbox(
         "Public transport station close to your home",
-        placeholder="Eg: Châtelet",
         options=stops["stop_name"],
     )
     submitted = st.form_submit_button("Search mates")
