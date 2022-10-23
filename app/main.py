@@ -52,7 +52,11 @@ def find_mates(coords: Dict[str, float], min_mates=5) -> pd.DataFrame:
 
 # Page
 
-st.markdown("# Meet mates")
+st.markdown(
+    """# Meet mates
+
+This applet lets you discover mates that live near you. *Made by Nicolas O. with love and coffee.*"""
+)
 
 with st.form("form"):
     name = st.text_input(
@@ -85,5 +89,5 @@ if submitted and name.strip() != "":
         }
     )
     mates = find_mates(coords)
-    st.markdown("## We found these mates for you:")
+    st.markdown("## These mates live near you:")
     st.table(mates)
