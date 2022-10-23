@@ -6,6 +6,7 @@ import json
 from deta import Deta
 from typing import List, Dict
 from geopy.distance import geodesic
+import plotly.express as px
 
 # Load database
 deta = Deta(st.secrets["deta_key"])
@@ -90,6 +91,8 @@ if submitted and name.strip() == "":
 
 if submitted and name.strip() != "":
     coords = get_coords(location_name)
+    # Push data to database
+    # Mates are uniquely identified by their names. This allows impersonation, but the damages here are limited.
     db.put(
         {
             "name": name,
@@ -101,8 +104,15 @@ if submitted and name.strip() != "":
     )
     mates = find_mates(name, coords)
     st.markdown("## These mates live near you:")
+    # Show a table with mates
     st.table(mates[mates["name"] != mates][["name", "location_name", "distance (km)"]])
-    st.map(mates)
+    # Plot a map
+    fig = px.scatter_mapbox(
+        mates, lat="lat", lon="lon", hover_name="name", hover_data="location_name"
+    )
+    fig.update_layout(mapbox_style="open-street-map")
+    fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
+    st.plotly_chart(fig)
 
 st.markdown(
     """---
