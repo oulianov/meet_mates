@@ -64,10 +64,13 @@ with st.form("form"):
         placeholder="Lowis Douglas",
         help="Other mates should be able to reach out to you by looking at your name",
     )
+    st.info(
+        "Click on the field below and type the name of a metro station near your home."
+    )
     location_name = st.selectbox(
         "Public transport station close to your home",
         options=stops["stop_name"],
-        help="Delete the textbox content and start typing to quickly find your station",
+        help="Start typing to quickly find your station",
     )
     submitted = st.form_submit_button("Search mates")
     st.markdown(
