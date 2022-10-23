@@ -44,8 +44,8 @@ def find_mates(coords: Dict[str, float], min_mates=5) -> pd.DataFrame:
         lambda x: geodesic(
             (x["lat"], x["lon"]),
             (coords["lat"], coords["lon"]),
-            axis=1,
-        ).km
+        ).km,
+        axis=1,
     )
     return all_mates_df[["name", "location_name", "distance (km)"]]
 
