@@ -118,7 +118,7 @@ if submitted and name.strip() != "":
         color_discrete_sequence=["fuchsia"],
         size=[10 for i in range(mates.shape[0])],
         zoom=zoom,
-        center=center,
+        center={"lat": center[1], "lon": center[0]},
     )
     fig.update_layout(mapbox_style="open-street-map")
     fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
