@@ -106,6 +106,9 @@ if submitted and name.strip() != "":
     # Show a table with mates
     st.table(mates[mates["name"] != mates][["name", "location_name", "distance (km)"]])
     # Plot a map
+    zoom, center = get_plotting_zoom_level_and_center_coordinates_from_lonlat_tuples(
+        mates["lon"], mates["lat"]
+    )
     fig = px.scatter_mapbox(
         mates,
         lat="lat",
@@ -114,9 +117,8 @@ if submitted and name.strip() != "":
         hover_data=["location_name"],
         color_discrete_sequence=["fuchsia"],
         size=[10 for i in range(mates.shape[0])],
-        zoom=get_plotting_zoom_level_and_center_coordinates_from_lonlat_tuples(
-            mates["lon"], mates["lat"]
-        ),
+        zoom=zoom,
+        center=center,
     )
     fig.update_layout(mapbox_style="open-street-map")
     fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
