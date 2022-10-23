@@ -21,7 +21,7 @@ stops = load_stops()
 def get_coords(location_name: str) -> Dict[str, float]:
     """Find associated coordinates to a location name."""
     stop = stops[stops["stop_name"] == location_name]
-    return {"lon": stop["stop_lon"], "lat": stop["stop_lat"]}
+    return {"lon": stop["stop_lon"].iloc[0], "lat": stop["stop_lat"].iloc[0]}
 
 
 def find_mates(coords: Dict[str, float]) -> List[dict]:
