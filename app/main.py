@@ -31,14 +31,14 @@ def find_mates(coords: List[float]) -> List[dict]:
 
 st.markdown("# Meet mates")
 
-with st.form("form"):
+with st.form("form") as submitted:
     name = st.text_input("Your full name", placeholder="Lowis Douglas")
     location_name = st.selectbox(
         "Public transport station close to your home",
         placeholder="Eg: Châtelet",
         options=stops["stop_name"],
     )
-    submitted = st.form_submit_button("Search mates")
+    st.form_submit_button("Search mates")
     st.markdown(
         "***By clicking on search mate, you agree to share the above info with other users.***"
     )
