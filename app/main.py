@@ -12,6 +12,7 @@ db = deta.Base("mates")
 @st.cache()
 def load_stops():
     stops = pd.read_csv("app/slim_stops.csv")
+    return stops
 
 
 stops = load_stops()
@@ -31,14 +32,14 @@ def find_mates(coords: List[float]) -> List[dict]:
 
 st.markdown("# Meet mates")
 
-with st.form("form") as submitted:
+with st.form("form"):
     name = st.text_input("Your full name", placeholder="Lowis Douglas")
     location_name = st.selectbox(
         "Public transport station close to your home",
         placeholder="Eg: Châtelet",
         options=stops["stop_name"],
     )
-    st.form_submit_button("Search mates")
+    submitted = st.form_submit_button("Search mates")
     st.markdown(
         "***By clicking on search mate, you agree to share the above info with other users.***"
     )
