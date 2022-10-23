@@ -47,7 +47,7 @@ def find_mates(coords: Dict[str, float], min_mates=5) -> pd.DataFrame:
             axis=1,
         ).km
     )
-    return all_mates_df.iloc[min_indices][["name", "location_name", "distance (km)"]]
+    return all_mates_df[["name", "location_name", "distance (km)"]]
 
 
 # Page
@@ -77,4 +77,5 @@ if submitted:
         }
     )
     mates = find_mates(coords)
+    st.markdown("## We found these mates for you:")
     st.table(mates)
