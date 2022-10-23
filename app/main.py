@@ -4,6 +4,7 @@ import streamlit as st
 import extra_streamlit_components as stx
 import pandas as pd
 import numpy as np
+import json
 from deta import Deta
 from typing import List, Dict
 from geopy.distance import geodesic
@@ -19,7 +20,7 @@ def get_manager():
 
 
 cookie_manager = get_manager()
-cookies = cookie_manager.get("local_data")
+cookies = json.loads(cookie_manager.get("local_data"))
 if cookies is None:
     cookies = {}
 st.write(cookies)
@@ -103,13 +104,13 @@ if submitted and name.strip() != "":
         unique_id = hash(name + datetime.utcnow().isoformat())
     cookie_manager.set(
         "local_data",
-        {
+        str({
             "unique_id": unique_id,
             "name": name,
             "location_selected": int(
                 (stops["stop_name"] == location_name).index.values[0]
             ),
-        },
+        }),
         expires_at=datetime.now() + timedelta(days=30),
     )
     db.put(
