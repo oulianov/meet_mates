@@ -20,9 +20,11 @@ def get_manager():
 
 
 cookie_manager = get_manager()
-cookies = json.loads(cookie_manager.get("local_data"))
+cookies = cookie_manager.get("local_data")
 if cookies is None:
     cookies = {}
+else:
+    cookies = json.loads(cookies)
 st.write(cookies)
 
 # Load data
@@ -104,13 +106,15 @@ if submitted and name.strip() != "":
         unique_id = hash(name + datetime.utcnow().isoformat())
     cookie_manager.set(
         "local_data",
-        str({
-            "unique_id": unique_id,
-            "name": name,
-            "location_selected": int(
-                (stops["stop_name"] == location_name).index.values[0]
-            ),
-        }),
+        str(
+            {
+                "unique_id": unique_id,
+                "name": name,
+                "location_selected": int(
+                    (stops["stop_name"] == location_name).index.values[0]
+                ),
+            }
+        ),
         expires_at=datetime.now() + timedelta(days=30),
     )
     db.put(
