@@ -114,7 +114,7 @@ if submitted and name.strip() != "":
         hover_name="name",
         hover_data=["location_name"],
         color_discrete_sequence=["fuchsia"],
-        size=10,
+        size=[10 for i in range(mates.shape[0])],
         zoom=11,
     )
     fig.update_layout(mapbox_style="open-street-map")
