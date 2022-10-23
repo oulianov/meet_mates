@@ -1,6 +1,7 @@
-deta
-numpy
-pandas
-streamlit
 typing
 geopy
+numpy
+pandas
+deta
+streamlit
+extra_streamlit_components

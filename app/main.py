@@ -1,4 +1,6 @@
+from datetime import datetime, timedelta
 import streamlit as st
+import extra_streamlit_components as stx
 import pandas as pd
 import numpy as np
 from deta import Deta
@@ -9,7 +11,18 @@ from geopy.distance import geodesic
 deta = Deta(st.secrets["deta_key"])
 db = deta.Base("mates")
 
+# Load cookie manager
+@st.cache(allow_output_mutation=True)
+def get_manager():
+    return stx.CookieManager()
 
+
+cookie_manager = get_manager()
+cookies = cookie_manager.get_all()
+st.write(cookies)
+
+
+# Load data
 @st.cache()
 def load_stops():
     stops = pd.read_csv("data_gathering/output_data/slim_stops.csv")
@@ -62,6 +75,7 @@ with st.form("form"):
     name = st.text_input(
         "Your full name",
         placeholder="Lowis Douglas",
+        # value=cookies.get("name", ""),
         help="Other mates should be able to reach out to you by looking at your name",
     )
     st.info(
@@ -69,6 +83,7 @@ with st.form("form"):
     )
     location_name = st.selectbox(
         "Public transport station close to your home",
+        # index=cookies.get("location_selected", 0),
         options=stops["stop_name"],
         help="Start typing to quickly find your station",
     )
@@ -81,8 +96,14 @@ if submitted and name.strip() == "":
     st.warning("Please enter your name!")
 
 if submitted and name.strip() != "":
-    has_data = True
     coords = get_coords(location_name)
+    # cookie_manager.set(
+    #     {
+    #         "name": name,
+    #         "location_selected": int((stops["stop_name"] == location_name).index),
+    #     },
+    #     expires_at=datetime.now() + timedelta(days=30),
+    # )
     db.put(
         {
             "name": name,
@@ -97,6 +118,6 @@ if submitted and name.strip() != "":
 
 st.markdown(
     """---
-*Made by [Nicolas O.](https://github.com/oulianov) with love and coffee.*
+*Made by [Nicolas O.](https://github.com/oulianov) with love and coffee ☕*
 """
 )
