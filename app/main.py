@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from enum import unique
 import streamlit as st
 import extra_streamlit_components as stx
 import pandas as pd
@@ -18,9 +19,8 @@ def get_manager():
 
 
 cookie_manager = get_manager()
-stored_user_id = cookie_manager.get("user_id")
-stored_name = cookie_manager.get("name")
-stored_location_selected = cookie_manager.get("location_selected")
+cookies = cookie_manager.get("local_data")
+st.write(cookies)
 
 # Load data
 @st.cache()
@@ -97,23 +97,20 @@ if submitted and name.strip() == "":
 
 if submitted and name.strip() != "":
     coords = get_coords(location_name)
+    if cookies.get("unique_id") is None:
+        unique_id = hash(name + datetime.utcnow().isoformat())
     cookie_manager.set(
-        "unique_id",
-        hash(name + datetime.utcnow().isoformat()),
-        expires_at=datetime.now() + timedelta(days=30),
-    )
-    cookie_manager.set(
-        "name",
-        name,
-        expires_at=datetime.now() + timedelta(days=30),
-    )
-    cookie_manager.set(
-        "location_selected",
-        int((stops["stop_name"] == location_name).index),
+        "local_data",
+        {
+            "unique_id": unique_id,
+            "name": name,
+            "location_selected": int((stops["stop_name"] == location_name).index),
+        },
         expires_at=datetime.now() + timedelta(days=30),
     )
     db.put(
         {
+            "unique_id": unique_id,
             "name": name,
             "location_name": location_name,
             "lon": coords["lon"],
