@@ -115,8 +115,8 @@ if submitted and name.strip() != "":
         lon="lon",
         hover_name="name",
         hover_data=["location_name"],
-        color_discrete_sequence=["fuchsia"],
-        size=[10 for i in range(mates.shape[0])],
+        color_discrete_sequence=["black"],
+        size=[6 for i in range(mates.shape[0])],
         zoom=zoom,
         center={"lat": center[1], "lon": center[0]},
     )
