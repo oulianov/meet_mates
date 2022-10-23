@@ -37,6 +37,7 @@ def find_mates(
     coords_vec = np.array([coords["lat"], coords["lon"]])
     all_mates = db.fetch({"mates.name?ne": my_name}).items
     all_mates_df = pd.DataFrame(all_mates)
+    all_mates_df = all_mates_df[all_mates_df["name"] != my_name]
     mates_position = np.array(all_mates_df[["lat", "lon"]])
     # Compute L1 distance to every other mate
     # We can do that because every point is very close (approximately a plane)
