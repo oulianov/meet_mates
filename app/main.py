@@ -1,12 +1,11 @@
-from datetime import datetime, timedelta
 import streamlit as st
 import pandas as pd
 import numpy as np
-import json
 from deta import Deta
 from typing import List, Dict
 from geopy.distance import geodesic
 import plotly.express as px
+from functions import get_plotting_zoom_level_and_center_coordinates_from_lonlat_tuples
 
 # Load database
 deta = Deta(st.secrets["deta_key"])
@@ -115,7 +114,9 @@ if submitted and name.strip() != "":
         hover_data=["location_name"],
         color_discrete_sequence=["fuchsia"],
         size=[10 for i in range(mates.shape[0])],
-        zoom=11,
+        zoom=get_plotting_zoom_level_and_center_coordinates_from_lonlat_tuples(
+            mates["lon"], mates["lat"]
+        ),
     )
     fig.update_layout(mapbox_style="open-street-map")
     fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
