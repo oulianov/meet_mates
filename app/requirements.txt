@@ -4,4 +4,3 @@ numpy
 pandas
 deta
 streamlit
-extra_streamlit_components

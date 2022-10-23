@@ -1,7 +1,5 @@
 from datetime import datetime, timedelta
-from enum import unique
 import streamlit as st
-import extra_streamlit_components as stx
 import pandas as pd
 import numpy as np
 import json
@@ -13,19 +11,6 @@ from geopy.distance import geodesic
 deta = Deta(st.secrets["deta_key"])
 db = deta.Base("mates")
 
-# Load cookie manager
-@st.cache(allow_output_mutation=True)
-def get_manager():
-    return stx.CookieManager()
-
-
-cookie_manager = get_manager()
-cookies = cookie_manager.get("local_data")
-if cookies is None:
-    cookies = {}
-else:
-    cookies = json.loads(cookies)
-st.write(cookies)
 
 # Load data
 @st.cache()
@@ -43,10 +28,14 @@ def get_coords(location_name: str) -> Dict[str, float]:
     return {"lon": stop["stop_lon"].iloc[0], "lat": stop["stop_lat"].iloc[0]}
 
 
-def find_mates(coords: Dict[str, float], min_mates=5) -> pd.DataFrame:
+def find_mates(
+    my_name: str,
+    coords: Dict[str, float],
+    min_mates=5,
+) -> pd.DataFrame:
     """Find mates that indicated a location near coords."""
     coords_vec = np.array([coords["lat"], coords["lon"]])
-    all_mates = db.fetch().items
+    all_mates = db.fetch({"mates.name?ne": my_name}).items
     all_mates_df = pd.DataFrame(all_mates)
     mates_position = np.array(all_mates_df[["lat", "lon"]])
     # Compute L1 distance to every other mate
@@ -80,7 +69,6 @@ with st.form("form"):
     name = st.text_input(
         "Your full name",
         placeholder="Lowis Douglas",
-        value=cookies.get("name", ""),
         help="Other mates should be able to reach out to you by looking at your name",
     )
     st.info(
@@ -88,7 +76,6 @@ with st.form("form"):
     )
     location_name = st.selectbox(
         "Public transport station close to your home",
-        index=cookies.get("location_selected", 0),
         options=stops["stop_name"],
         help="Start typing to quickly find your station",
     )
@@ -102,29 +89,14 @@ if submitted and name.strip() == "":
 
 if submitted and name.strip() != "":
     coords = get_coords(location_name)
-    if cookies.get("unique_id") is None:
-        unique_id = hash(name + datetime.utcnow().isoformat())
-    cookie_manager.set(
-        "local_data",
-        str(
-            {
-                "unique_id": unique_id,
-                "name": name,
-                "location_selected": int(
-                    (stops["stop_name"] == location_name).index.values[0]
-                ),
-            }
-        ),
-        expires_at=datetime.now() + timedelta(days=30),
-    )
     db.put(
         {
-            "unique_id": unique_id,
             "name": name,
             "location_name": location_name,
             "lon": coords["lon"],
             "lat": coords["lat"],
-        }
+        },
+        key=name,
     )
     mates = find_mates(coords)
     st.markdown("## These mates live near you:")
@@ -135,5 +107,3 @@ st.markdown(
 *Made by [Nicolas O.](https://github.com/oulianov) with love and coffee ☕*
 """
 )
-
-st.button("Delete my data")
