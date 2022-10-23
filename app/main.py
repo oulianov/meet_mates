@@ -20,6 +20,8 @@ def get_manager():
 
 cookie_manager = get_manager()
 cookies = cookie_manager.get("local_data")
+if cookies is None:
+    cookies = {}
 st.write(cookies)
 
 # Load data
