@@ -11,7 +11,7 @@ db = deta.Base("mates")
 
 @st.cache()
 def load_stops():
-    stops = pd.read_csv("slim_stops.csv")
+    stops = pd.read_csv("app/slim_stops.csv")
 
 
 stops = load_stops()
