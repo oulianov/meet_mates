@@ -108,7 +108,7 @@ if submitted and name.strip() != "":
     st.table(mates[mates["name"] != mates][["name", "location_name", "distance (km)"]])
     # Plot a map
     fig = px.scatter_mapbox(
-        mates, lat="lat", lon="lon", hover_name="name", hover_data="location_name"
+        mates, lat="lat", lon="lon", hover_name="name", hover_data=["location_name"]
     )
     fig.update_layout(mapbox_style="open-street-map")
     fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
