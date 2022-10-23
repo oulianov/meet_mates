@@ -1,1 +1,1 @@
-Dataset with datasets' links : https://data.iledefrance-mobilites.fr/explore/dataset/emplacement-des-gares-idf/table/
+Download the dataset : https://data.iledefrance-mobilites.fr/explore/dataset/emplacement-des-gares-idf/table/ (to be put in the folder `./data`))
