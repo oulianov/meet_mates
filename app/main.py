@@ -75,7 +75,7 @@ with st.form("form"):
     name = st.text_input(
         "Your full name",
         placeholder="Lowis Douglas",
-        value=stored_name if stored_name is not None else "",
+        value=cookies.get("name", ""),
         help="Other mates should be able to reach out to you by looking at your name",
     )
     st.info(
@@ -83,7 +83,7 @@ with st.form("form"):
     )
     location_name = st.selectbox(
         "Public transport station close to your home",
-        index=stored_location_selected if stored_location_selected is not None else 0,
+        index=cookies.get("location_selected", 0),
         options=stops["stop_name"],
         help="Start typing to quickly find your station",
     )
