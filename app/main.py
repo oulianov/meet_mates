@@ -18,9 +18,9 @@ def get_manager():
 
 
 cookie_manager = get_manager()
-cookies = cookie_manager.get_all()
-st.write(cookies)
-
+stored_user_id = cookie_manager.get("user_id")
+stored_name = cookie_manager.get("name")
+stored_location_selected = cookie_manager.get("location_selected")
 
 # Load data
 @st.cache()
@@ -75,7 +75,7 @@ with st.form("form"):
     name = st.text_input(
         "Your full name",
         placeholder="Lowis Douglas",
-        # value=cookies.get("name", ""),
+        value=stored_name if stored_name is not None else "",
         help="Other mates should be able to reach out to you by looking at your name",
     )
     st.info(
@@ -83,7 +83,7 @@ with st.form("form"):
     )
     location_name = st.selectbox(
         "Public transport station close to your home",
-        # index=cookies.get("location_selected", 0),
+        index=stored_location_selected if stored_location_selected is not None else 0,
         options=stops["stop_name"],
         help="Start typing to quickly find your station",
     )
@@ -97,13 +97,21 @@ if submitted and name.strip() == "":
 
 if submitted and name.strip() != "":
     coords = get_coords(location_name)
-    # cookie_manager.set(
-    #     {
-    #         "name": name,
-    #         "location_selected": int((stops["stop_name"] == location_name).index),
-    #     },
-    #     expires_at=datetime.now() + timedelta(days=30),
-    # )
+    cookie_manager.set(
+        "unique_id",
+        hash(name + datetime.utcnow().isoformat()),
+        expires_at=datetime.now() + timedelta(days=30),
+    )
+    cookie_manager.set(
+        "name",
+        name,
+        expires_at=datetime.now() + timedelta(days=30),
+    )
+    cookie_manager.set(
+        "location_selected",
+        int((stops["stop_name"] == location_name).index),
+        expires_at=datetime.now() + timedelta(days=30),
+    )
     db.put(
         {
             "name": name,
@@ -121,3 +129,5 @@ st.markdown(
 *Made by [Nicolas O.](https://github.com/oulianov) with love and coffee ☕*
 """
 )
+
+st.button("Delete my data")
