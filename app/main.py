@@ -55,17 +55,25 @@ def find_mates(coords: Dict[str, float], min_mates=5) -> pd.DataFrame:
 st.markdown("# Meet mates")
 
 with st.form("form"):
-    name = st.text_input("Your full name", placeholder="Lowis Douglas")
+    name = st.text_input(
+        "Your full name",
+        placeholder="Lowis Douglas",
+        help="Other mates should be able to reach out to you by looking at your name",
+    )
     location_name = st.selectbox(
         "Public transport station close to your home",
         options=stops["stop_name"],
+        help="Delete the textbox content and start typing to quickly find your station",
     )
     submitted = st.form_submit_button("Search mates")
     st.markdown(
-        "***By clicking on search mate, you agree to share the above info with other users.***"
+        "*By clicking on search mate, you agree to share the above info with other users.*"
     )
 
-if submitted:
+if submitted and name.strip() == "":
+    st.warning("Please enter your name!")
+
+if submitted and name.strip() != "":
     has_data = True
     coords = get_coords(location_name)
     db.put(
