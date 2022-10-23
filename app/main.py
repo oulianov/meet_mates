@@ -98,7 +98,7 @@ if submitted and name.strip() != "":
         },
         key=name,
     )
-    mates = find_mates(coords)
+    mates = find_mates(name, coords)
     st.markdown("## These mates live near you:")
     st.table(mates)
 
