@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from deta import Deta
-from typing import List
+from typing import List, Dict
 
 # Load database
 deta = Deta(st.secrets["deta_key"])
@@ -18,13 +18,16 @@ def load_stops():
 stops = load_stops()
 
 
-def get_coords(location_name: str) -> List[float]:
+def get_coords(location_name: str) -> Dict[str, float]:
     """Find associated coordinates to a location name."""
-    return [0, 0]
+    stop = stops[stops["stop_name"] == location_name]
+    return {"lon": stop["stop_lon"], "lat": stop["stop_lat"]}
 
 
-def find_mates(coords: List[float]) -> List[dict]:
+def find_mates(coords: Dict[str, float]) -> List[dict]:
     """Find mates that indicated a location near coords."""
+    all_mates = db.fetch().items
+    all_mates = pd.DataFrame(all_mates)
     return []
 
 
@@ -45,4 +48,11 @@ with st.form("form"):
 
 if submitted:
     coords = get_coords(location_name)
-    db.put({"name": name, "location_name": location_name, "coords": coords})
+    db.put(
+        {
+            "name": name,
+            "location_name": location_name,
+            "lon": coords["lon"],
+            "lat": coords["lat"],
+        }
+    )
