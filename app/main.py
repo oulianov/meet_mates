@@ -106,7 +106,7 @@ if submitted and name.strip() != "":
         {
             "unique_id": unique_id,
             "name": name,
-            "location_selected": int((stops["stop_name"] == location_name).index),
+            "location_selected": (stops["stop_name"] == location_name).index.values[0],
         },
         expires_at=datetime.now() + timedelta(days=30),
     )
