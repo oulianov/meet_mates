@@ -61,7 +61,7 @@ def find_mates(
 # Page
 
 st.markdown(
-    """# Meet mates
+    """# Meet mates & more!
 
 This applet lets you discover mates that live near you."""
 )
